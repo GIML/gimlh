@@ -1,0 +1,25 @@
+text:
+  Some text Some text Some text Some text Some text Some text Some text Some text Some text Some text Some text Some text Some text Some text Some text Some text
+  Some text Some text Some text Some text Some text Some text Some text Some text Some text Some text Some text Some text Some text Some text Some text Some text
+
+num:
+  12345
+
+another_num:
+  1234.324
+
+list:
+  - "1"
+  - "2"
+  - "3"
+  - "4"
+  - "5"
+  - "6"
+
+another_list:
+  - "1"
+  - "2"
+  - "3"
+  - "4"
+  - "5"
+  - "6"
