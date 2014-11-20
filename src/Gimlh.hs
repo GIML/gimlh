@@ -1,7 +1,7 @@
 module Gimlh
 (
-  parseLines
---, parseFile
+  parseString
+, parseFile
 )
 
 where
@@ -24,6 +24,14 @@ data GimlType = TextG | ListG | NumberG | FloatG deriving (Show)
 type GimlNode = (String, GimlType, GimlVal)
 
 type Giml = [GimlNode]
+
+parseFile :: FilePath -> IO Giml
+parseFile path = do
+    contents <- readFile path
+    return $ parseString contents
+
+parseString :: String -> Giml
+parseString contents = parseLines (lines contents) Nothing
 
 parseLines :: [String] -> Maybe GimlNode -> Giml
 parseLines [] Nothing = []
