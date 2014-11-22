@@ -2,6 +2,7 @@ module Gimlh
 (
   parseString
 , parseFile
+, simplifyGiml
 )
 
 where
@@ -23,6 +24,8 @@ data GimlType = TextG | ListG | NumberG | FloatG deriving (Show)
 
 type GimlNode = (String, GimlType, GimlVal)
 
+type SimpleGiml = [(String, GimlVal)]
+
 type Giml = [GimlNode]
 
 parseFile :: FilePath -> IO Giml
@@ -32,6 +35,9 @@ parseFile path = do
 
 parseString :: String -> Giml
 parseString contents = parseLines (lines contents) Nothing
+
+simplifyGiml :: Giml -> SimpleGiml
+simplifyGiml giml = map (\(a, b, c) -> (a, c)) giml
 
 parseLines :: [String] -> Maybe GimlNode -> Giml
 parseLines [] Nothing = []
