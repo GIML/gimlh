@@ -10,13 +10,17 @@ You can just clone and import module into your haskell code
 
 ## Usage
 
-There are two methods: `parseString` and `parseFile`
+There are three methods: `parseString`, `parseFile` and `simplifyGiml`
 
 `parseString` will parse `GIML` from pure string.
 
 `parseFile` accepts `FilePath` and parses it into `IO Giml`
 
+`simplifyGiml` translates parsed `GIML` in simply form `SimplyGiml`
+
 `Giml` - is a type which contains list of `GimlNode`s
+
+`SimplyGiml` - is a list of tuples `(String, GimlVal)` == `(key, value)`
 
 `GimlNode` - is a tuple `(String, GimlType, GimlVal)`
 
