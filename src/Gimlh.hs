@@ -62,17 +62,17 @@ newNode (":num:":varName)   = (varName !! 0, NumberG, Number 0)
 
 setNode :: GimlNode -> String -> GimlNode
 setNode (varName, ListG, xs) "" = (varName, ListG, xs)
-setNode (varName, ListG, xs) x = case (words x) !! 0 of
+setNode (varName, ListG, xs) x  = case (words x) !! 0 of
                                   "-"       -> (varName, ListG, List $ (val2List xs) ++ [(unwords $ tail (words x))])
                                   otherwise -> (varName, ListG, List $ (val2List xs) ++ (splitOn ", " x))
-setNode (varName, TextG, xs) x = (varName, TextG, Text $ (val2Text xs) ++ x ++ "\n")
-setNode (varName, _, val) "" = (varName, NumberG, val)
-setNode (varName, _, _) newVal = let parsedNum = fromJust $ parseNum newVal
-                                 in
-                                   case parsedNum of
-                                     (Number val) -> (varName, NumberG, Number val)
-                                     (Float val)  -> (varName, FloatG, Float val)
-                                     otherwise    -> (varName, NumberG, Number 0)
+setNode (varName, TextG, xs) x  = (varName, TextG, Text $ (val2Text xs) ++ x ++ "\n")
+setNode (varName, _, val) ""    = (varName, NumberG, val)
+setNode (varName, _, _) newVal  = let parsedNum = fromJust $ parseNum newVal
+                                    in
+                                      case parsedNum of
+                                        (Number val) -> (varName, NumberG, Number val)
+                                        (Float val)  -> (varName, FloatG, Float val)
+                                        otherwise    -> (varName, NumberG, Number 0)
 
 val2Text (Text val) = val
 val2List (List val) = val
