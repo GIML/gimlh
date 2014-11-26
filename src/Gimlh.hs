@@ -11,8 +11,15 @@ Haskell parser for GIML.
 -}
 module Gimlh
 (
+-- * Data types
+  Giml(..)
+, GimlVal(..)
+, GimlType(..)
+, GimlNode(..)
+, SimpleGiml(..)
+
 -- * Functions for parse and modify GIML
-  parseString
+, parseString
 , parseFile
 , simplifyGiml
 )
@@ -26,6 +33,7 @@ import Data.Maybe (fromJust)
 import Numeric (readFloat)
 import Data.Char (isDigit)
 
+-- | Value represent parsed data for specified variable name
 data GimlVal
     = Text String    -- ^ Text value
     | List [String]  -- ^ List value
@@ -33,6 +41,7 @@ data GimlVal
     | Float Double   -- ^ Float number value
     deriving (Show)
 
+-- | Type of value for internal functions
 data GimlType
     = TextG   -- ^ Type for text value, stored in 'GimlNode'
     | ListG   -- ^ Type for list value, stored in 'GimlNode'
@@ -40,28 +49,33 @@ data GimlType
     | FloatG  -- ^ Type for float number value, stored in 'GimlNode'
     deriving (Show)
 
+-- | Type 'GimlNode' represent list of tuples. Tuple contains 'String' as key,
+-- 'GimlType' as type of value and 'GimlVal' as value
 type GimlNode = (String, GimlType, GimlVal)
 
+-- | Type 'SimpleGiml' represent list of tuples. Tuple contains 'String' as
+-- key and 'GimlVal' as value
 type SimpleGiml = [(String, GimlVal)]
 
+-- | Type 'Giml' represent list of 'GimlNode's
 type Giml = [GimlNode]
 
--- |The 'parseFile' method will parse 'GIML' from file by 'FilePath'
+-- | The 'parseFile' method will parse 'GIML' from file by 'FilePath'
 parseFile :: FilePath -> IO Giml
 parseFile path = do
     contents <- readFile path
     return $ parseString contents
 
--- |The 'parseString' method will parse 'GIML' from pure string.
+-- | The 'parseString' method will parse 'GIML' from pure string.
 parseString :: String -> Giml
 parseString contents = parseLines (lines contents) Nothing
 
--- |The 'simplifyGiml' method will remove types from 'Giml' creating
+-- | The 'simplifyGiml' method will remove types from 'Giml' creating
 -- 'SimpleGiml' object
 simplifyGiml :: Giml -> SimpleGiml
 simplifyGiml = map (\(a, b, c) -> (a, c))
 
--- |The 'parseLines' method takes list of pure strings and initial
+-- The 'parseLines' method takes list of pure strings and initial
 -- 'GimlNode' and recursively parses them into 'Giml'
 parseLines :: [String] -> Maybe GimlNode -> Giml
 parseLines [] Nothing = []
@@ -71,7 +85,7 @@ parseLines (line:rest) node = case parseLine line node of
                                 (Nothing, newNode) -> parseLines rest newNode
                                 (oldNode, newNode) -> fromJust oldNode : parseLines rest newNode
 
--- |The 'parseLine' method takes string and node and try to recognize that
+-- The 'parseLine' method takes string and node and try to recognize that
 -- it should be attached to value in original node or create new node. Or
 -- skip the line if it is comment or current node is 'Nothing'
 parseLine :: String -> Maybe GimlNode -> (Maybe GimlNode, Maybe GimlNode)
@@ -81,7 +95,7 @@ parseLine line@(':':_) Nothing    = (Nothing, return $ newNode (words line))
 parseLine line (Just var)         = (Nothing, return $ setNode var line)
 parseLine _ Nothing               = (Nothing, Nothing)
 
--- |The 'newNode' receive two strings as type and name of node and creates
+-- The 'newNode' receive two strings as type and name of node and creates
 -- new node according to type
 newNode :: [String] -> GimlNode
 newNode (":list:":varName)  = (head varName, ListG, List [])
@@ -89,7 +103,7 @@ newNode (":vlist:":varName) = (head varName, ListG, List [])
 newNode (":text:":varName)  = (head varName, TextG, Text [])
 newNode (":num:":varName)   = (head varName, NumberG, Number 0)
 
--- |The 'setNode' method receive node and value and attach value to value
+-- The 'setNode' method receive node and value and attach value to value
 -- in current node
 setNode :: GimlNode -> String -> GimlNode
 setNode (varName, ListG, xs) "" = (varName, ListG, xs)
@@ -105,17 +119,16 @@ setNode (varName, _, _) newVal  = let parsedNum = fromJust $ parseNum newVal
                                         (Float val)  -> (varName, FloatG, Float val)
                                         otherwise    -> (varName, NumberG, Number 0)
 
--- |The 'val2Text' method gets pure string from 'GimlVal'
+-- The 'val2Text' method gets pure string from 'GimlVal'
 val2Text (Text val) = val
--- |The 'val2List' method gets pure list from 'GimlVal'
+-- The 'val2List' method gets pure list from 'GimlVal'
 val2List (List val) = val
 
--- |The 'parseNum' method gets integer or float number from numeric
+-- The 'parseNum' method gets integer or float number from numeric
 -- 'GimlVal'
 parseNum :: String -> Maybe GimlVal
 parseNum str = do
     let digitsAndDot = filter (\x -> isDigit x || x == '.') str
-    if any (== '.') digitsAndDot then
-      return $ Float $ fst . head $ readFloat digitsAndDot
-    else
-      return $ Number $ read digitsAndDot
+    if any (== '.') digitsAndDot
+      then return $ Float $ fst . head $ readFloat digitsAndDot
+      else return $ Number $ read digitsAndDot
