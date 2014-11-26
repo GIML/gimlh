@@ -59,7 +59,7 @@ parseString contents = parseLines (lines contents) Nothing
 -- |The 'simplifyGiml' method will remove types from 'Giml' creating
 -- 'SimpleGiml' object
 simplifyGiml :: Giml -> SimpleGiml
-simplifyGiml giml = map (\(a, b, c) -> (a, c)) giml
+simplifyGiml = map (\(a, b, c) -> (a, c))
 
 -- |The 'parseLines' method takes list of pure strings and initial
 -- 'GimlNode' and recursively parses them into 'Giml'
@@ -69,7 +69,7 @@ parseLines [] (Just node) = [node]
 parseLines (line:rest) node = case parseLine line node of
                                 (Nothing, Nothing) -> parseLines rest node
                                 (Nothing, newNode) -> parseLines rest newNode
-                                (oldNode, newNode) -> (fromJust oldNode) : parseLines rest newNode
+                                (oldNode, newNode) -> fromJust oldNode : parseLines rest newNode
 
 -- |The 'parseLine' method takes string and node and try to recognize that
 -- it should be attached to value in original node or create new node. Or
@@ -84,19 +84,19 @@ parseLine _ Nothing               = (Nothing, Nothing)
 -- |The 'newNode' receive two strings as type and name of node and creates
 -- new node according to type
 newNode :: [String] -> GimlNode
-newNode (":list:":varName)  = (varName !! 0, ListG, List [])
-newNode (":vlist:":varName) = (varName !! 0, ListG, List [])
-newNode (":text:":varName)  = (varName !! 0, TextG, Text [])
-newNode (":num:":varName)   = (varName !! 0, NumberG, Number 0)
+newNode (":list:":varName)  = (head varName, ListG, List [])
+newNode (":vlist:":varName) = (head varName, ListG, List [])
+newNode (":text:":varName)  = (head varName, TextG, Text [])
+newNode (":num:":varName)   = (head varName, NumberG, Number 0)
 
 -- |The 'setNode' method receive node and value and attach value to value
 -- in current node
 setNode :: GimlNode -> String -> GimlNode
 setNode (varName, ListG, xs) "" = (varName, ListG, xs)
-setNode (varName, ListG, xs) x  = case (words x) !! 0 of
-                                  "-"       -> (varName, ListG, List $ (val2List xs) ++ [(unwords $ tail (words x))])
-                                  otherwise -> (varName, ListG, List $ (val2List xs) ++ (splitOn ", " x))
-setNode (varName, TextG, xs) x  = (varName, TextG, Text $ (val2Text xs) ++ x ++ "\n")
+setNode (varName, ListG, xs) x  = case head $ words x of
+                                  "-"       -> (varName, ListG, List $ val2List xs ++ [unwords . tail $ words x])
+                                  otherwise -> (varName, ListG, List $ val2List xs ++ splitOn ", " x)
+setNode (varName, TextG, xs) x  = (varName, TextG, Text $ val2Text xs ++ x ++ "\n")
 setNode (varName, _, val) ""    = (varName, NumberG, val)
 setNode (varName, _, _) newVal  = let parsedNum = fromJust $ parseNum newVal
                                     in
@@ -115,7 +115,7 @@ val2List (List val) = val
 parseNum :: String -> Maybe GimlVal
 parseNum str = do
     let digitsAndDot = filter (\x -> isDigit x || x == '.') str
-    if any (\x -> x == '.') digitsAndDot then
-      return $ Float $ fst (readFloat digitsAndDot !! 0)
+    if any (== '.') digitsAndDot then
+      return $ Float $ fst . head $ readFloat digitsAndDot
     else
       return $ Number $ read digitsAndDot
