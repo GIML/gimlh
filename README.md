@@ -4,11 +4,25 @@ Haskell parser for GIML.
 
 ## Install
 
-Working on it
-
-You can just clone and import module into your haskell code
+```bash
+cabal install gimlh
+```
 
 ## Usage
+
+```haskell
+import Gimlh
+
+getGiml :: FilePath -> IO SimpleGiml
+getGiml path = do
+  giml <- parseFile path
+  let simplified = simplifyGiml giml
+  return simplifyGiml
+```
+
+## Documentation
+
+[haddock](http://hackage.haskell.org/package/gimlh-0.1.0.0/docs/Gimlh.html)
 
 There are three methods: `parseString`, `parseFile` and `simplifyGiml`
 
