@@ -106,18 +106,21 @@ newNode (":num:":key)   = (head key, NumberG, Number 0)
 -- The 'setNode' method receive node and value and attach value to value
 -- in current node
 setNode :: GimlNode -> String -> GimlNode
-setNode (varName, ListG, xs) "" = (varName, ListG, xs)
-setNode (varName, ListG, xs) x  = case head $ words x of
-                                  "-"       -> (varName, ListG, List $ val2List xs ++ [unwords . tail $ words x])
-                                  otherwise -> (varName, ListG, List $ val2List xs ++ splitOn ", " x)
-setNode (varName, TextG, xs) x  = (varName, TextG, Text $ val2Text xs ++ x ++ "\n")
-setNode (varName, _, val) ""    = (varName, NumberG, val)
-setNode (varName, _, _) newVal  = let parsedNum = fromJust $ parseNum newVal
-                                    in
-                                      case parsedNum of
-                                        (Number val) -> (varName, NumberG, Number val)
-                                        (Float val)  -> (varName, FloatG, Float val)
-                                        otherwise    -> (varName, NumberG, Number 0)
+setNode orig@(key, ListG, xs) "" = orig
+setNode (key, ListG, xs) x       = case head $ words x of
+                                    "-"       -> (key, ListG, List $ val2List xs ++ [unwords . tail $ words x])
+                                    otherwise -> (key, ListG, List $ val2List xs ++ splitOn ", " (removeCommaAtEnd x))
+setNode orig@(key, TextG, xs) "" = case xs of
+                                     Text ""   -> orig
+                                     otherwise -> (key, TextG, Text $ val2Text xs ++ "\n")
+setNode (key, TextG, xs) x       = (key, TextG, Text $ val2Text xs ++ x ++ "\n")
+setNode (key, _, val) ""         = (key, NumberG, val)
+setNode (key, _, _) newVal       = let parsedNum = fromJust $ parseNum newVal
+                                     in
+                                       case parsedNum of
+                                         (Number val) -> (key, NumberG, Number val)
+                                         (Float val)  -> (key, FloatG, Float val)
+                                         otherwise    -> (key, NumberG, Number 0)
 
 -- The 'val2Text' method gets pure string from 'GimlVal'
 val2Text (Text val) = val
