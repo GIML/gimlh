@@ -127,11 +127,16 @@ val2Text (Text val) = val
 -- The 'val2List' method gets pure list from 'GimlVal'
 val2List (List val) = val
 
+removeCommaAtEnd :: String -> String
+removeCommaAtEnd str = if last str == ',' && last (init str) /= '\\'
+                         then init str
+                         else str
+
 -- The 'parseNum' method gets integer or float number from numeric
 -- 'GimlVal'
 parseNum :: String -> Maybe GimlVal
 parseNum str = do
     let digitsAndDot = filter (\x -> isDigit x || x == '.') str
-    if any (== '.') digitsAndDot
+    if '.' `elem` digitsAndDot
       then return $ Float $ fst . head $ readFloat digitsAndDot
       else return $ Number $ read digitsAndDot
