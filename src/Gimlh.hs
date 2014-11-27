@@ -98,10 +98,10 @@ parseLine _ Nothing               = (Nothing, Nothing)
 -- The 'newNode' receive two strings as type and name of node and creates
 -- new node according to type
 newNode :: [String] -> GimlNode
-newNode (":list:":varName)  = (head varName, ListG, List [])
-newNode (":vlist:":varName) = (head varName, ListG, List [])
-newNode (":text:":varName)  = (head varName, TextG, Text [])
-newNode (":num:":varName)   = (head varName, NumberG, Number 0)
+newNode (":list:":key)  = (head key, ListG, List [])
+newNode (":vlist:":key) = (head key, ListG, List [])
+newNode (":text:":key)  = (head key, TextG, Text [])
+newNode (":num:":key)   = (head key, NumberG, Number 0)
 
 -- The 'setNode' method receive node and value and attach value to value
 -- in current node
