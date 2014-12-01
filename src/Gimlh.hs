@@ -22,6 +22,8 @@ module Gimlh
 , parseString
 , parseFile
 , simplifyGiml
+, fetch
+, fetchG
 )
 
 where
@@ -74,6 +76,19 @@ parseString contents = parseLines (lines contents) Nothing
 -- 'SimpleGiml' object
 simplifyGiml :: Giml -> SimpleGiml
 simplifyGiml = map (\(a, b, c) -> (a, c))
+
+-- | The 'fetch' method will fetch values from simplified giml
+-- by given key
+fetch :: SimpleGiml -> String -> GimlVal
+fetch [] _ = []
+fetch ((key, val):xs) req = if key == req
+                              then val
+                              else fetch xs
+
+-- | The 'fetchG' method will fetch values from giml
+-- by given key
+fetchG :: Giml -> String -> GimlVal
+fetchG giml key = fetch (simplifyGiml giml) key
 
 -- The 'parseLines' method takes list of pure strings and initial
 -- 'GimlNode' and recursively parses them into 'Giml'
