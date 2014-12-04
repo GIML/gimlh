@@ -79,15 +79,15 @@ simplifyGiml = map (\(a, b, c) -> (a, c))
 
 -- | The 'fetch' method will fetch values from simplified giml
 -- by given key
-fetch :: SimpleGiml -> String -> GimlVal
-fetch [] _ = []
+fetch :: SimpleGiml -> String -> Maybe GimlVal
+fetch [] _ = Nothing
 fetch ((key, val):xs) req = if key == req
-                              then val
-                              else fetch xs
+                              then return val
+                              else fetch xs req
 
 -- | The 'fetchG' method will fetch values from giml
 -- by given key
-fetchG :: Giml -> String -> GimlVal
+fetchG :: Giml -> String -> Maybe GimlVal
 fetchG giml key = fetch (simplifyGiml giml) key
 
 -- The 'parseLines' method takes list of pure strings and initial
