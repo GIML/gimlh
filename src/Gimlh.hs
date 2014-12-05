@@ -37,10 +37,10 @@ import Data.Char (isDigit)
 
 -- | Value represent parsed data for specified variable name
 data GimlVal
-    = Text String    -- ^ Text value
-    | List [String]  -- ^ List value
-    | Number Integer -- ^ Integer number value
-    | Float Double   -- ^ Float number value
+    = Text { valT   :: String }    -- ^ Text value
+    | List { valL   :: [String] }    -- ^ List value
+    | Number { valN :: Integer } -- ^ Integer number value
+    | Float { valF  :: Double }   -- ^ Float number value
     deriving (Show)
 
 -- | Type of value for internal functions
@@ -123,12 +123,12 @@ newNode (":num:":key)   = (head key, NumberG, Number 0)
 setNode :: GimlNode -> String -> GimlNode
 setNode orig@(key, ListG, xs) "" = orig
 setNode (key, ListG, xs) x       = case head $ words x of
-                                    "-"       -> (key, ListG, List $ val2List xs ++ [unwords . tail $ words x])
-                                    otherwise -> (key, ListG, List $ val2List xs ++ splitOn ", " (removeCommaAtEnd x))
+                                    "-"       -> (key, ListG, List $ fromGimlVal xs ++ [unwords . tail $ words x])
+                                    otherwise -> (key, ListG, List $ fromGimlVal xs ++ splitOn ", " (removeCommaAtEnd x))
 setNode orig@(key, TextG, xs) "" = case xs of
                                      Text ""   -> orig
-                                     otherwise -> (key, TextG, Text $ val2Text xs ++ "\n")
-setNode (key, TextG, xs) x       = (key, TextG, Text $ val2Text xs ++ x ++ "\n")
+                                     otherwise -> (key, TextG, Text $ fromGimlVal xs ++ "\n")
+setNode (key, TextG, xs) x       = (key, TextG, Text $ fromGimlVal xs ++ x ++ "\n")
 setNode (key, _, val) ""         = (key, NumberG, val)
 setNode (key, _, _) newVal       = let parsedNum = fromJust $ parseNum newVal
                                      in
@@ -137,10 +137,23 @@ setNode (key, _, _) newVal       = let parsedNum = fromJust $ parseNum newVal
                                          (Float val)  -> (key, FloatG, Float val)
                                          otherwise    -> (key, NumberG, Number 0)
 
--- The 'val2Text' method gets pure string from 'GimlVal'
-val2Text (Text val) = val
--- The 'val2List' method gets pure list from 'GimlVal'
-val2List (List val) = val
+fromGimlVal val = case val of
+                    (Number _) -> fromNumber val
+                    (Float  _) -> fromFloat val
+                    (Text   _) -> fromText val
+                    (List   _) -> fromList val
+
+fromText :: GimlVal -> String
+fromText (Text x) = x
+
+fromList :: GimlVal -> [String]
+fromList (List x) = x
+
+fromNumber :: GimlVal -> Integer
+fromNumber (Number x) = x
+
+fromFloat :: GimlVal -> Double
+fromFloat (Float x) = x
 
 removeCommaAtEnd :: String -> String
 removeCommaAtEnd str = if last str == ',' && last (init str) /= '\\'
