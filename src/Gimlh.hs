@@ -24,6 +24,8 @@ module Gimlh
 , simplifyGiml
 , fetch
 , fetchG
+, val2Str
+, val2List
 )
 
 where
@@ -90,6 +92,22 @@ fetch ((key, val):xs) req = if key == req
 fetchG :: Giml -> String -> Maybe GimlVal
 fetchG giml key = fetch (simplifyGiml giml) key
 
+-- | The 'val2Str' method will retrun values stored in GIML in string
+-- representation
+val2Str :: GimlVal -> String
+val2Str (Text val)   = val
+val2Str (List val)   = show val
+val2Str (Number val) = show val
+val2Str (Float val)  = show val
+
+-- | The 'val2List' method will retrun values stored in GIML in list of string
+-- representation
+val2List :: GimlVal -> [String]
+val2List (List val)   = val
+val2List (Text val)   = [val]
+val2List (Number val) = [show val]
+val2List (Float val)  = [show val]
+
 -- The 'parseLines' method takes list of pure strings and initial
 -- 'GimlNode' and recursively parses them into 'Giml'
 parseLines :: [String] -> Maybe GimlNode -> Giml
@@ -145,12 +163,6 @@ val2List (List val) = val
 val2Int  (Number val) = val
 -- The 'val2List' method gets pure list from 'GimlVal'
 val2Dbl  (Float val) = val
-
-val2Str :: GimlVal -> String
-val2Str (Text val)   = val
-val2Str (List val)   = show val
-val2Str (Number val) = show val
-val2Str (Float val)  = show val
 
 removeCommaAtEnd :: String -> String
 removeCommaAtEnd str = if last str == ',' && last (init str) /= '\\'
