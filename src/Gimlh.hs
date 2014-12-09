@@ -141,6 +141,16 @@ setNode (key, _, _) newVal       = let parsedNum = fromJust $ parseNum newVal
 val2Text (Text val) = val
 -- The 'val2List' method gets pure list from 'GimlVal'
 val2List (List val) = val
+-- The 'val2List' method gets pure list from 'GimlVal'
+val2Int  (Number val) = val
+-- The 'val2List' method gets pure list from 'GimlVal'
+val2Dbl  (Float val) = val
+
+val2Str :: GimlVal -> String
+val2Str (Text val)   = val
+val2Str (List val)   = show val
+val2Str (Number val) = show val
+val2Str (Float val)  = show val
 
 removeCommaAtEnd :: String -> String
 removeCommaAtEnd str = if last str == ',' && last (init str) /= '\\'
