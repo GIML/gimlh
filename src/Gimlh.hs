@@ -158,8 +158,6 @@ setNode (key, _, _) newVal       = let parsedNum = fromJust $ parseNum newVal
 -- The 'val2Text' method gets pure string from 'GimlVal'
 val2Text (Text val) = val
 -- The 'val2List' method gets pure list from 'GimlVal'
-val2List (List val) = val
--- The 'val2List' method gets pure list from 'GimlVal'
 val2Int  (Number val) = val
 -- The 'val2List' method gets pure list from 'GimlVal'
 val2Dbl  (Float val) = val
