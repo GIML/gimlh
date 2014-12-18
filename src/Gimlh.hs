@@ -145,8 +145,8 @@ setNode (key, ListG, xs) x       = case head $ words x of
                                     otherwise -> (key, ListG, List $ val2List xs ++ splitOn ", " (removeCommaAtEnd x))
 setNode orig@(key, TextG, xs) "" = case xs of
                                      Text ""   -> orig
-                                     otherwise -> (key, TextG, Text $ val2Text xs ++ "\n")
-setNode (key, TextG, xs) x       = (key, TextG, Text $ val2Text xs ++ x ++ "\n")
+                                     otherwise -> (key, TextG, Text $ val2Str xs ++ "\n")
+setNode (key, TextG, xs) x       = (key, TextG, Text $ val2Str xs ++ x ++ "\n")
 setNode (key, _, val) ""         = (key, NumberG, val)
 setNode (key, _, _) newVal       = let parsedNum = fromJust $ parseNum newVal
                                      in
@@ -155,8 +155,6 @@ setNode (key, _, _) newVal       = let parsedNum = fromJust $ parseNum newVal
                                          (Float val)  -> (key, FloatG, Float val)
                                          otherwise    -> (key, NumberG, Number 0)
 
--- The 'val2Text' method gets pure string from 'GimlVal'
-val2Text (Text val) = val
 -- The 'val2List' method gets pure list from 'GimlVal'
 val2Int  (Number val) = val
 -- The 'val2List' method gets pure list from 'GimlVal'
