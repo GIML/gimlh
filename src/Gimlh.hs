@@ -90,7 +90,7 @@ fetch ((key, val):xs) req = if key == req
 -- | The 'fetchG' method will fetch values from giml
 -- by given key
 fetchG :: Giml -> String -> Maybe GimlVal
-fetchG giml key = fetch (simplifyGiml giml) key
+fetchG giml = fetch (simplifyGiml giml)
 
 -- | The 'val2Str' method will retrun values stored in GIML in string
 -- representation
