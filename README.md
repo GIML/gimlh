@@ -32,6 +32,14 @@ There are three methods: `parseString`, `parseFile` and `simplifyGiml`
 
 `simplifyGiml` translates parsed `GIML` in simply form `SimplyGiml`
 
+`fetch` fetch values from simplified giml by given key
+
+`fetchG` fetch values from giml by given key
+
+`val2Str` retruns values stored in GIML in string representation
+
+`val2List` retruns values stored in GIML in list of string representation
+
 `Giml` - is a type which contains list of `GimlNode`s
 
 `SimplyGiml` - is a list of tuples `(String, GimlVal)` == `(key, value)`
