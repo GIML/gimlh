@@ -43,7 +43,7 @@ data GimlVal
     | List [String]  -- ^ List value
     | Number Integer -- ^ Integer number value
     | Float Double   -- ^ Float number value
-    deriving (Show)
+    deriving (Show, Eq)
 
 -- | Type of value for internal functions
 data GimlType
@@ -51,7 +51,7 @@ data GimlType
     | ListG   -- ^ Type for list value, stored in 'GimlNode'
     | NumberG -- ^ Type for integer number value, stored in 'GimlNode'
     | FloatG  -- ^ Type for float number value, stored in 'GimlNode'
-    deriving (Show)
+    deriving (Show, Eq)
 
 -- | Type 'GimlNode' represent list of tuples. Tuple contains 'String' as key,
 -- 'GimlType' as type of value and 'GimlVal' as value
