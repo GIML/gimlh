@@ -146,7 +146,9 @@ setNode (key, ListG, xs) x       = case head $ words x of
 setNode orig@(key, TextG, xs) "" = case xs of
                                      Text ""   -> orig
                                      otherwise -> (key, TextG, Text $ val2Str xs ++ "\n")
-setNode (key, TextG, xs) x       = (key, TextG, Text $ val2Str xs ++ x ++ "\n")
+setNode (key, TextG, xs) x       = case xs of
+                                     Text ""   -> (key, TextG, Text $ val2Str xs ++ x)
+                                     otherwise -> (key, TextG, Text $ val2Str xs ++ "\n" ++ x)
 setNode (key, _, val) ""         = (key, NumberG, val)
 setNode (key, _, _) newVal       = let parsedNum = fromJust $ parseNum newVal
                                      in
