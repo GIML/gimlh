@@ -15,6 +15,13 @@ testParseStringWNumAssertion =
     in
       giml @=? parseString ":num: this_is_num\n123"
 
+testParseStringWFloatAssertion :: Assertion
+testParseStringWFloatAssertion =
+    let node = ("this_is_float", FloatG, Float $ 123.5)
+        giml = [node]
+    in
+      giml @=? parseString ":num: this_is_float\n123.5"
+
 testParseStringWListAssertion :: Assertion
 testParseStringWListAssertion =
     let node = ("this_is_list", ListG, List $ ["a", "b", "c"])
@@ -34,3 +41,4 @@ testAll = do
     testParseStringWListAssertion
     testParseStringWListWCommaAtEndAssertion
     testParseStringWNumAssertion
+    testParseStringWFloatAssertion
