@@ -20,7 +20,7 @@ testParseStringWML2TextAssertion =
     let node = ("this_is_m2text", TextG, Text $ "abc\ndef")
         giml = [node]
     in
-      giml @=? parseString ":text: this_is_mtext\n\nabc\ndef\n\n"
+      giml @=? parseString ":text: this_is_m2text\n\nabc\ndef\n\n"
 
 testParseStringWNumAssertion :: Assertion
 testParseStringWNumAssertion =

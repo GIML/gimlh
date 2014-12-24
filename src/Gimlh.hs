@@ -112,11 +112,17 @@ val2List (Float val)  = [show val]
 -- 'GimlNode' and recursively parses them into 'Giml'
 parseLines :: [String] -> Maybe GimlNode -> Giml
 parseLines [] Nothing = []
-parseLines [] (Just node) = [node]
+parseLines [] (Just node) = [postProcess node]
 parseLines (line:rest) node = case parseLine line node of
                                 (Nothing, Nothing) -> parseLines rest node
                                 (Nothing, newNode) -> parseLines rest newNode
-                                (oldNode, newNode) -> fromJust oldNode : parseLines rest newNode
+                                (oldNode, newNode) -> postProcess (fromJust oldNode) : parseLines rest newNode
+
+postProcess :: GimlNode -> GimlNode
+postProcess (key, TextG, val) = let str = removeSymbolAtEnd (val2Str val) '\n'
+                                in
+                                  (key, TextG, Text $ str)
+postProcess node = node
 
 -- The 'parseLine' method takes string and node and try to recognize that
 -- it should be attached to value in original node or create new node. Or
@@ -142,7 +148,7 @@ setNode :: GimlNode -> String -> GimlNode
 setNode orig@(key, ListG, xs) "" = orig
 setNode (key, ListG, xs) x       = case head $ words x of
                                     "-"       -> (key, ListG, List $ val2List xs ++ [unwords . tail $ words x])
-                                    otherwise -> (key, ListG, List $ val2List xs ++ splitOn ", " (removeCommaAtEnd x))
+                                    otherwise -> (key, ListG, List $ val2List xs ++ splitOn ", " (removeSymbolAtEnd x ','))
 setNode orig@(key, TextG, xs) "" = case xs of
                                      Text ""   -> orig
                                      otherwise -> (key, TextG, Text $ val2Str xs ++ "\n")
@@ -162,9 +168,9 @@ val2Int  (Number val) = val
 -- The 'val2List' method gets pure list from 'GimlVal'
 val2Dbl  (Float val) = val
 
-removeCommaAtEnd :: String -> String
-removeCommaAtEnd str = if last str == ',' && last (init str) /= '\\'
-                         then init str
+removeSymbolAtEnd :: String -> Char -> String
+removeSymbolAtEnd str char = if last str == char && last (init str) /= '\\'
+                         then removeSymbolAtEnd (init str) char
                          else str
 
 -- The 'parseNum' method gets integer or float number from numeric
