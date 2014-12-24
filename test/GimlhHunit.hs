@@ -15,6 +15,13 @@ testParseStringWMLTextAssertion =
     in
       giml @=? parseString ":text: this_is_mtext\nabc\ndef"
 
+testParseStringWML2TextAssertion :: Assertion
+testParseStringWML2TextAssertion =
+    let node = ("this_is_m2text", TextG, Text $ "abc\ndef")
+        giml = [node]
+    in
+      giml @=? parseString ":text: this_is_mtext\n\nabc\ndef\n\n"
+
 testParseStringWNumAssertion :: Assertion
 testParseStringWNumAssertion =
     let node = ("this_is_num", NumberG, Number $ 123)
@@ -83,3 +90,4 @@ testAll = do
     testParseStringWVListAssertion
     testParseStringWNodesAssertion
     testParseStringWMLListAssertion
+    testParseStringWML2TextAssertion
