@@ -50,6 +50,15 @@ testParseStringWListWCommaAtEndAssertion =
     in
       giml @=? parseString ":list: this_is_list\na, b, c,"
 
+testParseStringWNodesAssertion :: Assertion
+testParseStringWNodesAssertion =
+    let node1 = ("this_is_list", ListG, List $ ["a", "b", "c"])
+        node2 = ("this_is_text", TextG, Text $ "abc")
+        node3 = ("this_is_num", NumberG, Number $ 123)
+        giml = [node1, node2, node3]
+    in
+      giml @=? parseString ":list: this_is_list\na, b, c,\n:text: this_is_text\nabc\n:num: this_is_num\n123"
+
 testAll = do
     testParseStringWTextAssertion
     testParseStringWListAssertion
@@ -58,3 +67,4 @@ testAll = do
     testParseStringWFloatAssertion
     testParseStringWMLTextAssertion
     testParseStringWVListAssertion
+    testParseStringWNodesAssertion
