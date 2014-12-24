@@ -4,7 +4,7 @@
 name:                gimlh
 version:             0.1.1.0
 synopsis:            Haskell parser for GIML
--- description:
+description:         Parser for small simple language for big data Gimlh (https://github.com/gazay/gimlh)
 homepage:            https://github.com/gazay/gimlh
 license:             MIT
 license-file:        LICENSE
