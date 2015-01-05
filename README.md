@@ -26,7 +26,7 @@ getGiml path = do
 
 ## Documentation
 
-[haddock](http://hackage.haskell.org/package/gimlh-0.1.0.0/docs/Gimlh.html)
+[haddock](http://hackage.haskell.org/package/gimlh-0.1.1.0/docs/Gimlh.html)
 
 There are three methods: `parseString`, `parseFile` and `simplifyGiml`
 
