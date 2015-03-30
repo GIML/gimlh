@@ -18,5 +18,5 @@ cabal-version:       >=1.8
 library
   exposed-modules:     Gimlh
   -- other-modules:
-  build-depends:       base ==4.7.*, split ==0.2.*
+  build-depends:       base ==4.*, split ==0.2.*
   hs-source-dirs:      src
