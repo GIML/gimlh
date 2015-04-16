@@ -2,7 +2,7 @@
 --  see http://haskell.org/cabal/users-guide/
 
 name:                gimlh
-version:             0.1.2.0
+version:             0.1.3.0
 synopsis:            Haskell parser for GIML
 description:         Parser for small simple language for big data Gimlh (https://github.com/gazay/gimlh)
 homepage:            https://github.com/gazay/gimlh
