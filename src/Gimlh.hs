@@ -1,7 +1,7 @@
 {-|
 Module        : Gimlh
 Description   : Module for parsing GIML from file or string
-Copyright     : (c) Alexey Gaziev, 2014
+Copyright     : (c) Alexey Gaziev, 2015
 License       : MIT
 Maintainer    : alex.gaziev@gmail.com
 Stability     : experimental
